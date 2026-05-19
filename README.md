@@ -14,11 +14,6 @@ KH Teka, 16-column grid, glass panels, restrained motion.
 - Three.js + three-globe for the 3D globe
 - Framer Motion
 
-## Routes
-
-- `/` — AUM landing page (rebuild scaffold)
-- `/atlas` — AUM Atlas dashboard
-
 ## Develop
 
 ```bash
@@ -26,7 +21,7 @@ npm install
 npm run dev
 ```
 
-Open `/atlas` for the dashboard.
+Dashboard is at `/`.
 
 ## Data
 
