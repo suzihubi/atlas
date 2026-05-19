@@ -1,0 +1,13 @@
+/*
+ * AUM Website — Font Face
+ * EXACT: @font-face rule from cssRules API (Sheet 0, Rule 45)
+ */
+
+@font-face {
+  font-display: swap;
+  font-family: kh-teka-regular;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/KHTeka-Regular.woff2") format("woff2"),
+       url("/fonts/KHTeka-Regular.woff") format("woff");
+}
