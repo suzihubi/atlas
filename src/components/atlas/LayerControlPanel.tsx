@@ -39,15 +39,15 @@ export function LayerControlPanel({
   onSnapshot,
 }: Props) {
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-[16px] border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-2 backdrop-blur-md">
-      <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-col gap-2 rounded-[16px] border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-2 backdrop-blur-md md:flex-row md:flex-wrap md:items-center md:gap-3">
+      <div className="no-scrollbar -mx-1 flex gap-1.5 overflow-x-auto px-1 md:overflow-visible">
         {modes.map((m) => {
           const active = mode === m.id;
           return (
             <button
               key={m.id}
               onClick={() => onModeChange(m.id)}
-              className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] transition-colors ${
+              className={`shrink-0 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] transition-colors ${
                 active
                   ? "border-[var(--atlas-creme)] bg-[var(--atlas-creme)] text-[var(--atlas-brown)]"
                   : "border-[var(--atlas-border)] text-[var(--atlas-creme)] hover:border-[var(--atlas-creme-muted)]"
@@ -59,16 +59,16 @@ export function LayerControlPanel({
         })}
       </div>
 
-      <div className="mx-1 h-6 w-px bg-[var(--atlas-border)]" />
+      <div className="mx-1 hidden h-6 w-px bg-[var(--atlas-border)] md:block" />
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="no-scrollbar -mx-1 flex gap-1.5 overflow-x-auto px-1 md:overflow-visible">
         {layers.map((l) => {
           const active = activeLayers.has(l.id);
           return (
             <button
               key={l.id}
               onClick={() => onToggleLayer(l.id)}
-              className={`rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] transition-colors ${
+              className={`shrink-0 rounded-full border px-3 py-1 text-[11px] uppercase tracking-[0.14em] transition-colors ${
                 active
                   ? "border-[var(--atlas-creme-muted)] bg-[rgba(255,235,196,0.10)] text-[var(--atlas-creme)]"
                   : "border-[var(--atlas-border)] text-[var(--atlas-creme-muted)] hover:text-[var(--atlas-creme)]"
@@ -80,12 +80,12 @@ export function LayerControlPanel({
         })}
       </div>
 
-      <div className="ml-auto flex items-center gap-2">
+      <div className="flex items-center justify-end md:ml-auto">
         <button
           onClick={onSnapshot}
           className="rounded-full border border-[var(--atlas-creme)] bg-transparent px-4 py-1.5 text-[11px] uppercase tracking-[0.14em] text-[var(--atlas-creme)] transition-colors hover:bg-[var(--atlas-creme)] hover:text-[var(--atlas-brown)]"
         >
-          Generate Executive Snapshot
+          Executive Snapshot
         </button>
       </div>
     </div>

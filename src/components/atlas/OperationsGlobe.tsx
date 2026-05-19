@@ -92,10 +92,20 @@ export function OperationsGlobe({
     );
     camera.position.set(0, 0, 320);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    const isCoarse =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(pointer: coarse)").matches === true;
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isCoarse,
+      alpha: true,
+      powerPreference: isCoarse ? "low-power" : "high-performance",
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, isCoarse ? 1.5 : 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.setClearColor(0x000000, 0);
+    renderer.domElement.style.touchAction = "none";
+    renderer.domElement.style.webkitUserSelect = "none";
+    renderer.domElement.style.userSelect = "none";
     mount.appendChild(renderer.domElement);
 
     const amb = new THREE.AmbientLight(0xfff4d6, 0.6);
@@ -189,70 +199,115 @@ export function OperationsGlobe({
     globe.scale.set(1.05, 1.05, 1.05);
     scene.add(globe);
 
-    // Idle rotation
-    let isInteracting = false;
-    const onPointerDown = () => (isInteracting = true);
-    const onPointerUp = () => (isInteracting = false);
-    renderer.domElement.addEventListener("pointerdown", onPointerDown);
-    renderer.domElement.addEventListener("pointerup", onPointerUp);
-    renderer.domElement.addEventListener("pointerleave", onPointerUp);
-
-    // Simple drag-to-rotate + wheel zoom (lightweight, avoids extra dep)
-    let isDragging = false;
-    let lastX = 0;
-    let lastY = 0;
+    // ── Input state ──────────────────────────────────────────
     let rotY = 0;
     let rotX = -0.25;
+    const minZ = 180;
+    const maxZ = 520;
+
+    type PointerState = { x: number; y: number; downX: number; downY: number };
+    const pointers = new Map<number, PointerState>();
+    let pinchDist = 0;
+    let isDragging = false;
+    let dragMoved = false;
     renderer.domElement.style.cursor = "grab";
-    renderer.domElement.addEventListener("pointerdown", (e) => {
-      isDragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
+
+    const isInteracting = () => pointers.size > 0;
+
+    const dist = (a: PointerState, b: PointerState) => {
+      const dx = a.x - b.x;
+      const dy = a.y - b.y;
+      return Math.hypot(dx, dy);
+    };
+
+    const onPtrDown = (e: PointerEvent) => {
+      renderer.domElement.setPointerCapture?.(e.pointerId);
+      pointers.set(e.pointerId, {
+        x: e.clientX,
+        y: e.clientY,
+        downX: e.clientX,
+        downY: e.clientY,
+      });
+      isDragging = pointers.size === 1;
+      dragMoved = false;
+      if (pointers.size === 2) {
+        const [a, b] = Array.from(pointers.values());
+        pinchDist = dist(a, b);
+      }
       renderer.domElement.style.cursor = "grabbing";
-    });
-    window.addEventListener("pointerup", () => {
-      isDragging = false;
-      renderer.domElement.style.cursor = "grab";
-    });
-    window.addEventListener("pointermove", (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      lastX = e.clientX;
-      lastY = e.clientY;
-      rotY += dx * 0.005;
-      rotX = Math.max(-1.2, Math.min(1.2, rotX + dy * 0.005));
-    });
+    };
+
+    const onPtrMove = (e: PointerEvent) => {
+      const p = pointers.get(e.pointerId);
+      if (!p) return;
+      const prevX = p.x;
+      const prevY = p.y;
+      p.x = e.clientX;
+      p.y = e.clientY;
+
+      if (pointers.size === 1 && isDragging) {
+        const dx = p.x - prevX;
+        const dy = p.y - prevY;
+        if (Math.abs(p.x - p.downX) > 4 || Math.abs(p.y - p.downY) > 4) dragMoved = true;
+        rotY += dx * 0.005;
+        rotX = Math.max(-1.2, Math.min(1.2, rotX + dy * 0.005));
+      } else if (pointers.size === 2) {
+        const [a, b] = Array.from(pointers.values());
+        const next = dist(a, b);
+        if (pinchDist > 0) {
+          const scale = pinchDist / next;
+          camera.position.z = Math.max(minZ, Math.min(maxZ, camera.position.z * scale));
+        }
+        pinchDist = next;
+        dragMoved = true;
+      }
+    };
+
+    const onPtrUp = (e: PointerEvent) => {
+      const p = pointers.get(e.pointerId);
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchDist = 0;
+      if (pointers.size === 0) {
+        renderer.domElement.style.cursor = "grab";
+        if (p && !dragMoved) {
+          // treat as tap → raycast
+          handlePick(p.downX, p.downY);
+        }
+        isDragging = false;
+      }
+    };
+
+    renderer.domElement.addEventListener("pointerdown", onPtrDown);
+    renderer.domElement.addEventListener("pointermove", onPtrMove);
+    renderer.domElement.addEventListener("pointerup", onPtrUp);
+    renderer.domElement.addEventListener("pointercancel", onPtrUp);
+    renderer.domElement.addEventListener("pointerleave", onPtrUp);
+
     renderer.domElement.addEventListener(
       "wheel",
-      (e) => {
+      (e: WheelEvent) => {
         e.preventDefault();
-        camera.position.z = Math.max(180, Math.min(520, camera.position.z + e.deltaY * 0.3));
+        camera.position.z = Math.max(minZ, Math.min(maxZ, camera.position.z + e.deltaY * 0.3));
       },
       { passive: false },
     );
 
-    // Click → raycast against globe pointsData and arc geometry
+    // ── Raycast tap → drawer ────────────────────────────────
     const raycaster = new THREE.Raycaster();
     const ndc = new THREE.Vector2();
-    let downPos = { x: 0, y: 0 };
-    renderer.domElement.addEventListener("pointerdown", (e) => {
-      downPos = { x: e.clientX, y: e.clientY };
-    });
-    renderer.domElement.addEventListener("click", (e) => {
-      const dx = Math.abs(e.clientX - downPos.x);
-      const dy = Math.abs(e.clientY - downPos.y);
-      if (dx > 4 || dy > 4) return; // it was a drag, not a click
+    function handlePick(clientX: number, clientY: number) {
       const rect = renderer.domElement.getBoundingClientRect();
-      ndc.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      ndc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
       raycaster.setFromCamera(ndc, camera);
+      // raycast points larger on mobile for easier tapping
+      raycaster.params.Points = { threshold: isCoarse ? 2.5 : 1.2 };
       const hits = raycaster.intersectObjects(globe.children, true);
       for (const hit of hits) {
         const o = hit.object;
-        // three-globe attaches the source datum on the mesh via __data
-        const d = (o as unknown as { __data?: { jurisdiction?: Jurisdiction } }).__data
-          || (o.parent as unknown as { __data?: { jurisdiction?: Jurisdiction } } | null)?.__data;
+        const d =
+          (o as unknown as { __data?: { jurisdiction?: Jurisdiction } }).__data ||
+          (o.parent as unknown as { __data?: { jurisdiction?: Jurisdiction } } | null)?.__data;
         if (d && (d as { jurisdiction?: Jurisdiction }).jurisdiction) {
           onSelectJurisdictionRef.current((d as { jurisdiction: Jurisdiction }).jurisdiction);
           return;
@@ -262,7 +317,7 @@ export function OperationsGlobe({
           return;
         }
       }
-    });
+    }
 
     // Resize
     const onResize = () => {
@@ -275,7 +330,7 @@ export function OperationsGlobe({
 
     let raf = 0;
     const animate = () => {
-      if (!isInteracting) {
+      if (!isInteracting()) {
         rotY += 0.0008;
       }
       globe.rotation.y = rotY;

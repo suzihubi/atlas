@@ -10,6 +10,7 @@ import { LayerControlPanel } from "@/components/atlas/LayerControlPanel";
 import { FlowLegend } from "@/components/atlas/FlowLegend";
 import { FlowDetailDrawer } from "@/components/atlas/FlowDetailDrawer";
 import { JurisdictionDetailDrawer } from "@/components/atlas/JurisdictionDetailDrawer";
+import { MobileSheet } from "@/components/atlas/MobileSheet";
 import AumLogo from "@/components/icons/AumLogo";
 import type { AtlasFlow, AtlasLayer, DashboardMode, Jurisdiction } from "@/types/atlas";
 
@@ -58,11 +59,14 @@ function modeToLayers(mode: DashboardMode): Set<AtlasLayer> {
   }
 }
 
+type MobilePanel = "operations" | "activity" | null;
+
 export default function AtlasPage() {
   const [mode, setMode] = useState<DashboardMode>("live");
   const [activeLayers, setActiveLayers] = useState<Set<AtlasLayer>>(new Set(ALL_LAYERS));
   const [selectedFlow, setSelectedFlow] = useState<AtlasFlow | null>(null);
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<Jurisdiction | null>(null);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>(null);
   const [utc, setUtc] = useState<string>("");
 
   useEffect(() => {
@@ -94,10 +98,12 @@ export default function AtlasPage() {
 
   const onSelectFlow = (f: AtlasFlow) => {
     setSelectedJurisdiction(null);
+    setMobilePanel(null);
     setSelectedFlow(f);
   };
   const onSelectJurisdiction = (j: Jurisdiction) => {
     setSelectedFlow(null);
+    setMobilePanel(null);
     setSelectedJurisdiction(j);
   };
 
@@ -109,18 +115,22 @@ export default function AtlasPage() {
       style={{
         background:
           "radial-gradient(ellipse at 50% 30%, #2a2018 0%, #1a1410 45%, #0a0705 100%)",
+        paddingTop: "var(--safe-top)",
+        paddingLeft: "var(--safe-left)",
+        paddingRight: "var(--safe-right)",
       }}
     >
       {/* Top bar */}
-      <header className="relative z-20 flex items-center gap-4 border-b border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-5 py-3 backdrop-blur-md">
-        <div className="flex items-center gap-3">
+      <header className="relative z-20 flex items-center gap-3 border-b border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-2.5 backdrop-blur-md md:gap-4 md:px-5 md:py-3">
+        <div className="flex items-center gap-2 md:gap-3">
           <AumLogo />
-          <div className="hidden flex-col leading-none md:flex">
-            <span className="text-[10px] uppercase tracking-[0.22em] text-[var(--atlas-creme-muted)]">
+          <div className="flex flex-col leading-none">
+            <span className="text-[9px] uppercase tracking-[0.22em] text-[var(--atlas-creme-muted)] md:text-[10px]">
               AUM Atlas
             </span>
-            <span className="-text-2 mt-0.5 text-[var(--atlas-creme)]">
-              Global Operations Command Center
+            <span className="mt-0.5 text-[12px] tracking-tight text-[var(--atlas-creme)] md:text-[18px]">
+              Global Operations
+              <span className="hidden md:inline"> Command Center</span>
             </span>
           </div>
         </div>
@@ -129,52 +139,88 @@ export default function AtlasPage() {
           <ExecutiveKpiBar />
         </div>
 
-        <div className="ml-auto flex items-center gap-3">
+        <div className="ml-auto flex items-center gap-2 md:gap-3">
           <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] md:inline-flex">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--atlas-success)]" />
             Executive Access
           </span>
-          <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme-muted)] md:inline-flex">
+          <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme-muted)] lg:inline-flex">
             Class · Internal
           </span>
-          <span className="tabular-nums text-[12px] text-[var(--atlas-creme)]">{utc}</span>
+          <span className="tabular-nums text-[11px] text-[var(--atlas-creme)] md:text-[12px]">
+            {utc}
+          </span>
         </div>
       </header>
 
-      {/* Mobile KPI rail */}
-      <div className="border-b border-[var(--atlas-border)] bg-[var(--atlas-panel)] px-4 py-2 lg:hidden">
-        <ExecutiveKpiBar />
+      {/* Mobile KPI strip — horizontal scroll */}
+      <div className="border-b border-[var(--atlas-border)] bg-[var(--atlas-panel)] backdrop-blur-md lg:hidden">
+        <div className="no-scrollbar overflow-x-auto px-3 py-2">
+          <div className="flex w-max gap-2">
+            <ExecutiveKpiBar />
+          </div>
+        </div>
       </div>
 
       {/* Main */}
-      <div className="relative flex flex-1 min-h-0">
-        {/* Left panel */}
+      <div className="relative flex min-h-0 flex-1">
+        {/* Left panel — desktop only */}
         <aside className="hidden w-[320px] shrink-0 overflow-y-auto border-r border-[var(--atlas-border)] bg-[var(--atlas-panel)] p-3 backdrop-blur-md md:block">
           <OperationsPanel />
         </aside>
 
         {/* Globe stage */}
         <main className="relative flex-1">
-          <FlowLegend />
+          {/* Legend — hidden on small mobile */}
+          <div className="hidden sm:block">
+            <FlowLegend />
+          </div>
+
+          {/* Mobile corner buttons */}
+          <button
+            onClick={() => setMobilePanel("operations")}
+            className="absolute left-3 top-3 z-10 inline-flex items-center gap-2 rounded-full border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] backdrop-blur-md md:hidden"
+            aria-label="Open Operations panel"
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--atlas-creme)]" />
+            Operations
+          </button>
+          <button
+            onClick={() => setMobilePanel("activity")}
+            className="absolute right-3 top-3 z-10 inline-flex items-center gap-2 rounded-full border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] backdrop-blur-md lg:hidden"
+            aria-label="Open Activity panel"
+          >
+            Activity
+            <span
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--atlas-warn)" }}
+            />
+          </button>
+
           <OperationsGlobe
             flows={visibleFlows}
             activeLayers={activeLayers}
             onSelectFlow={onSelectFlow}
             onSelectJurisdiction={onSelectJurisdiction}
           />
-          <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 text-[10px] uppercase tracking-[0.24em] text-[var(--atlas-creme-muted)] md:block">
-            Drag · Scroll · Click jurisdictions to inspect
+
+          <div className="pointer-events-none absolute bottom-2 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap text-[9px] uppercase tracking-[0.22em] text-[var(--atlas-creme-muted)] md:text-[10px] md:tracking-[0.24em]">
+            <span className="hidden md:inline">Drag · Scroll · Click jurisdictions</span>
+            <span className="md:hidden">Pinch · Drag · Tap nodes</span>
           </div>
         </main>
 
-        {/* Right panel */}
+        {/* Right panel — desktop only */}
         <aside className="hidden w-[340px] shrink-0 overflow-y-auto border-l border-[var(--atlas-border)] bg-[var(--atlas-panel)] p-3 backdrop-blur-md lg:block">
           <RiskAlertFeed />
         </aside>
       </div>
 
       {/* Bottom controls */}
-      <div className="relative z-20 border-t border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-4 py-3 backdrop-blur-md">
+      <div
+        className="relative z-20 border-t border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-2.5 backdrop-blur-md md:px-4 md:py-3"
+        style={{ paddingBottom: "max(var(--safe-bottom), 10px)" }}
+      >
         <LayerControlPanel
           activeLayers={activeLayers}
           onToggleLayer={toggleLayer}
@@ -184,13 +230,30 @@ export default function AtlasPage() {
         />
       </div>
 
+      {/* Mobile sheets */}
+      <MobileSheet
+        open={mobilePanel === "operations"}
+        onClose={() => setMobilePanel(null)}
+        eyebrow="Global Operations"
+        title="Treasury · Reserves · Footprint"
+      >
+        <OperationsPanel />
+      </MobileSheet>
+      <MobileSheet
+        open={mobilePanel === "activity"}
+        onClose={() => setMobilePanel(null)}
+        eyebrow="Activity"
+        title="Feed · Alerts · Compliance"
+      >
+        <RiskAlertFeed />
+      </MobileSheet>
+
       <FlowDetailDrawer flow={selectedFlow} onClose={() => setSelectedFlow(null)} />
       <JurisdictionDetailDrawer
         jurisdiction={selectedJurisdiction}
         flows={flows}
         onClose={() => setSelectedJurisdiction(null)}
       />
-
     </div>
   );
 }
