@@ -130,7 +130,7 @@ export const jurisdictions: Jurisdiction[] = [
     ],
     status: "monitoring",
     risk: "high",
-    regulatoryClassification: "PEDIGREE Sourcing — Enhanced Due Diligence",
+    regulatoryClassification: "PEDIGREE Sourcing Jurisdiction",
     entities: [],
     layers: ["sourcing", "pedigree", "sukuk", "edd"],
     coordinates: { lat: -25.9692, lng: 32.5732 },

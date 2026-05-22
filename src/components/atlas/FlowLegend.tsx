@@ -9,7 +9,6 @@ const items = [
   { color: aumPalette.purpleGold, label: "Sukuk / Fund Management Structure" },
   { color: aumPalette.coolWhite, label: "Regulatory / Oversight Linkage" },
   { color: aumPalette.amber, label: "Exploratory / In Development" },
-  { color: aumPalette.redAmber, label: "Enhanced Due Diligence" },
 ];
 
 export function FlowLegend() {
