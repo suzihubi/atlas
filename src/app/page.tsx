@@ -109,7 +109,7 @@ export default function AtlasPage() {
         paddingRight: "var(--safe-right)",
       }}
     >
-      {/* Top bar */}
+      {/* Top bar — lean: logo + title only */}
       <header className="relative z-20 flex items-center gap-3 border-b border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-2.5 backdrop-blur-md md:gap-4 md:px-5 md:py-3">
         <div className="flex items-center gap-2 md:gap-3">
           <AumLogo />
@@ -123,43 +123,12 @@ export default function AtlasPage() {
             </span>
           </div>
         </div>
-
-        <div className="ml-6 hidden flex-1 items-center gap-2 lg:flex">
-          <ExecutiveKpiBar />
-        </div>
-
-        <div className="ml-auto flex items-center gap-2 md:gap-3">
-          <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] md:inline-flex">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--atlas-success)]" />
-            Executive Access
-          </span>
-          <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme-muted)] lg:inline-flex">
-            Class · Internal
-          </span>
-          <span
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em]"
-            style={{
-              borderColor: "rgba(230, 184, 92, 0.55)",
-              color: "var(--atlas-warn)",
-              background: "rgba(230, 184, 92, 0.08)",
-            }}
-          >
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--atlas-warn)" }}
-            />
-            <span className="hidden md:inline">ATI Held · Pre-Launch</span>
-            <span className="md:hidden">ATI Held</span>
-          </span>
-        </div>
       </header>
 
-      {/* Mobile KPI strip — horizontal scroll */}
-      <div className="border-b border-[var(--atlas-border)] bg-[var(--atlas-panel)] backdrop-blur-md lg:hidden">
-        <div className="no-scrollbar overflow-x-auto px-3 py-2">
-          <div className="flex w-max gap-2">
-            <ExecutiveKpiBar />
-          </div>
+      {/* KPI strip — single row across all sizes, fills width on desktop, scrolls on mobile */}
+      <div className="border-b border-[var(--atlas-border)] bg-[var(--atlas-panel)] backdrop-blur-md">
+        <div className="no-scrollbar overflow-x-auto px-3 py-2 md:px-5 md:py-3">
+          <ExecutiveKpiBar />
         </div>
       </div>
 

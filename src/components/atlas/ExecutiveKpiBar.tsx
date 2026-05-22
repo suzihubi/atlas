@@ -2,11 +2,14 @@ import { headerKpis } from "@/data/kpis";
 
 export function ExecutiveKpiBar() {
   return (
-    <div className="flex flex-wrap gap-2">
+    // `min-w-full` ensures children can use flex-1 to fill horizontal space
+    // when the viewport is wider than the sum of card min-widths; otherwise
+    // the inner container grows and the parent (overflow-x-auto) scrolls.
+    <div className="flex min-w-full gap-2">
       {headerKpis.map((k) => (
         <div
           key={k.id}
-          className="flex min-w-[140px] flex-1 flex-col rounded-[14px] border border-[var(--atlas-border)] bg-[var(--atlas-panel)] px-4 py-3 backdrop-blur-md"
+          className="flex min-w-[150px] flex-1 flex-col rounded-[14px] border border-[var(--atlas-border)] bg-[var(--atlas-panel)] px-3 py-2 backdrop-blur-md md:px-4 md:py-2.5"
         >
           <div className="text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme-muted)]">
             {k.label}
