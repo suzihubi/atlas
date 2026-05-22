@@ -6,15 +6,15 @@ export const headerKpis: KpiValue[] = [
   {
     id: "jurisdictions",
     label: "Active Jurisdictions",
-    value: "9",
+    value: "8",
     sub: "4 regions",
     status: "ok",
   },
   {
     id: "entities",
     label: "Group Entities",
-    value: "7",
-    sub: "Across ADGM · DWTC · DIFC · DMCC · Labuan",
+    value: "6",
+    sub: "Across ADGM · DWTC · DIFC · DMCC",
     status: "ok",
   },
   {
@@ -51,13 +51,12 @@ export const headerKpis: KpiValue[] = [
 // ── Left panel cards ─────────────────────────────────────────
 
 export const footprintCard = {
-  active: 9,
+  active: 8,
   rows: [
     { label: "Operating Core", value: "United Arab Emirates" },
     { label: "Storage Jurisdictions", value: "5" },
     { label: "Sourcing Corridors", value: "3" },
     { label: "Trade Hubs", value: "5" },
-    { label: "Fund Management Hub", value: "Labuan" },
   ],
 };
 
@@ -76,12 +75,9 @@ export const sukukCard = {
   rows: [
     {
       label: "Underlying Assets",
-      value: "Gold sourced from Ghana · Mozambique · Colombia",
+      value: "Gold sourced from Ghana · Mozambique · Colombia · UAE",
     },
-    {
-      label: "Issuance Hub",
-      value: "Labuan (AUM Capital Management — Wakil)",
-    },
+    { label: "Issuance Hub", value: "DIFC (UAE)" },
     { label: "Distribution Hubs", value: "UAE · Singapore · Hong Kong" },
     { label: "Status", value: "In Development" },
   ],
@@ -96,13 +92,13 @@ export const troyCard = {
     },
     {
       label: "Reserve Structure",
-      value: "DIFC Prescribed Company (Bankruptcy-Remote SPV)",
+      value: "DIFC Bankruptcy-Remote SPV and Trust",
     },
     {
       label: "Lifecycle",
       value: "Lock → Fractionalise → Mint → Circulate → Burn/Reaggregate → Unlock",
     },
-    { label: "Status", value: "Pre-Operational" },
+    { label: "Status", value: "Pre-Launch" },
   ],
 };
 
@@ -176,45 +172,3 @@ export const roadmapItems: RoadmapItem[] = [
   },
 ];
 
-// ── Right panel: Watch List (replaces Risk & Alerts) ─────────
-
-export type WatchListItem = {
-  id: string;
-  severity: "low" | "medium" | "high";
-  label: string;
-};
-
-export const watchListItems: WatchListItem[] = [
-  {
-    id: "w1",
-    severity: "high",
-    label: "Mozambique — Enhanced due diligence required for all sourcing activity",
-  },
-  {
-    id: "w2",
-    severity: "medium",
-    label:
-      "Colombia — LATAM corridor in exploratory phase; sanctions framework being finalised",
-  },
-  {
-    id: "w3",
-    severity: "medium",
-    label: "Ghana — Sourcing protocol & PEDIGREE pilot scoping in progress",
-  },
-  {
-    id: "w4",
-    severity: "low",
-    label: "Singapore — Counterparty onboarding window opening pre-launch",
-  },
-];
-
-// ── Right panel: Regulatory Status (replaces Compliance Monitor) ──
-
-export const regulatoryStatus: Array<{ label: string; value: string }> = [
-  { label: "VARA (Dubai)", value: "ATI/26/03/0191 — Category 1 ARVA" },
-  { label: "ADGM (Abu Dhabi)", value: "Group Holding Co. Active" },
-  { label: "DIFC (Dubai)", value: "Prescribed Company In Formation" },
-  { label: "DMCC (Dubai)", value: "SPV In Formation" },
-  { label: "Labuan", value: "Fund Mgmt / Wakil Structure In Setup" },
-  { label: "CBUAE", value: "AUX Engagement — Phase 2" },
-];

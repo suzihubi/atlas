@@ -7,7 +7,6 @@ const layers: { id: AtlasLayer; label: string }[] = [
   { id: "storage", label: "Storage" },
   { id: "trade", label: "Trade" },
   { id: "sukuk", label: "Sukuk" },
-  { id: "fund_management", label: "Fund Management" },
   { id: "pedigree", label: "PEDIGREE" },
   { id: "troy", label: "TROY" },
   { id: "aux", label: "AUX" },

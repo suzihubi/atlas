@@ -35,7 +35,6 @@ const ALL_LAYERS: AtlasLayer[] = [
   "storage",
   "trade",
   "sukuk",
-  "fund_management",
   "pedigree",
   "troy",
   "aux",
@@ -50,7 +49,7 @@ function modeToLayers(mode: DashboardMode): Set<AtlasLayer> {
     case "trade":
       return new Set<AtlasLayer>(["trade"]);
     case "sukuk":
-      return new Set<AtlasLayer>(["sukuk", "fund_management"]);
+      return new Set<AtlasLayer>(["sukuk"]);
     case "products":
       return new Set<AtlasLayer>(["troy", "aux"]);
     case "global":
@@ -212,7 +211,7 @@ export default function AtlasPage() {
         open={mobilePanel === "activity"}
         onClose={() => setMobilePanel(null)}
         eyebrow="Roadmap"
-        title="Milestones · Watch List · Regulatory Status"
+        title="Strategic Milestones"
       >
         <RiskAlertFeed />
       </MobileSheet>

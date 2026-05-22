@@ -52,12 +52,16 @@ function layersForFlow(flow: AtlasFlow): AtlasLayer[] {
       out.push("trade");
       break;
     case "sukuk_issuance":
-      out.push("sukuk", "fund_management");
+      out.push("sukuk");
       break;
     case "partnership":
       // Trade Partner arc — surface under trade + troy modes.
       out.push("trade", "troy");
       break;
+  }
+  // Any flow related to sukuk also surfaces under the Sukuk layer.
+  if (flow.relatedProduct?.toLowerCase().includes("sukuk") && !out.includes("sukuk")) {
+    out.push("sukuk");
   }
   // Surface EDD-flagged flows under the EDD overlay layer.
   if (flow.complianceStatus === "enhanced_due_diligence") out.push("edd");
