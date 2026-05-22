@@ -57,7 +57,6 @@ export const footprintCard = {
     { label: "Sourcing Corridors", value: "3" },
     { label: "Trade Hubs", value: "3" },
     { label: "Fund Management Hub", value: "Labuan" },
-    { label: "Enhanced Monitoring", value: "1 (Mozambique)" },
   ],
 };
 
