@@ -3,7 +3,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { Jurisdiction, AtlasFlow } from "@/types/atlas";
-import { RiskBadge } from "./StatusBadge";
 
 type Props = {
   jurisdiction: Jurisdiction | null;
@@ -79,12 +78,6 @@ export function JurisdictionDetailDrawer({ jurisdiction, flows, onClose }: Props
                   {jurisdiction.regulatoryClassification}
                 </div>
                 <div className="-text-2 mt-1 text-[var(--atlas-creme)]">{jurisdiction.country}</div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <RiskBadge risk={jurisdiction.risk} />
-                  <span className="inline-flex items-center rounded-full border border-[var(--atlas-border)] px-2 py-[3px] text-[10px] uppercase tracking-[0.14em] text-[var(--atlas-creme)]">
-                    {jurisdiction.status}
-                  </span>
-                </div>
               </div>
               <button
                 onClick={onClose}

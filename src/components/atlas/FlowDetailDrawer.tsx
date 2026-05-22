@@ -3,8 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { AtlasFlow } from "@/types/atlas";
-import { RiskBadge, StatusBadge } from "./StatusBadge";
-import { complianceLabelMap, flowColorMap } from "@/lib/atlas-colors";
+import { flowColorMap } from "@/lib/atlas-colors";
 
 type Props = {
   flow: AtlasFlow | null;
@@ -84,13 +83,6 @@ export function FlowDetailDrawer({ flow, onClose }: Props) {
                   {flow.source.country} → {flow.destination.country}
                 </div>
                 <div className="-text-2 mt-1 text-[var(--atlas-creme)]">{flow.name}</div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <StatusBadge status={flow.status} />
-                  <RiskBadge risk={flow.risk} />
-                  <span className="inline-flex items-center rounded-full border border-[var(--atlas-border)] px-2 py-[3px] text-[10px] uppercase tracking-[0.14em] text-[var(--atlas-creme)]">
-                    {complianceLabelMap[flow.complianceStatus]}
-                  </span>
-                </div>
               </div>
               <button
                 onClick={onClose}
