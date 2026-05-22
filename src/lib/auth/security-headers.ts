@@ -1,7 +1,7 @@
 import type { NextResponse } from "next/server";
 
-// Atlas needs more permissive media/connect for the GeoJSON fetch + Three.js,
-// so the CSP is loosened relative to the deck-app's strict template.
+// CSP allows connect-src raw.githubusercontent.com for the globe's GeoJSON
+// fetch and 'unsafe-eval' for Three.js shader compilation.
 const CSP = [
   "default-src 'self'",
   "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
