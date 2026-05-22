@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import type { Jurisdiction, AtlasFlow } from "@/types/atlas";
 import { RiskBadge } from "./StatusBadge";
 
@@ -10,7 +11,21 @@ type Props = {
   onClose: () => void;
 };
 
+/** Tracks whether we should use the mobile bottom-sheet animation. */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isMobile;
+}
+
 export function JurisdictionDetailDrawer({ jurisdiction, flows, onClose }: Props) {
+  const isMobile = useIsMobile();
   const related = jurisdiction
     ? flows.filter(
         (f) =>
@@ -41,12 +56,12 @@ export function JurisdictionDetailDrawer({ jurisdiction, flows, onClose }: Props
             className="
               fixed z-50 flex flex-col overflow-hidden border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] backdrop-blur-xl
               inset-x-0 bottom-0 max-h-[85vh] rounded-t-[22px] border-x border-t
-              md:inset-y-0 md:right-0 md:left-auto md:bottom-auto md:w-[420px] md:max-w-[100vw] md:max-h-none md:rounded-none md:border-l md:border-x-0 md:border-t-0
+              md:inset-y-0 md:right-0 md:left-auto md:w-[420px] md:max-w-[100vw] md:max-h-none md:rounded-none md:border-l md:border-x-0 md:border-t-0
             "
             style={{ paddingBottom: "var(--safe-bottom)" }}
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
+            initial={isMobile ? { y: "100%" } : { x: 24, opacity: 0 }}
+            animate={isMobile ? { y: 0 } : { x: 0, opacity: 1 }}
+            exit={isMobile ? { y: "100%" } : { x: 24, opacity: 0 }}
             transition={{ type: "tween", duration: 0.26, ease: [0.23, 1, 0.32, 1] }}
           >
             <div className="flex items-center justify-center pt-2 md:hidden">
