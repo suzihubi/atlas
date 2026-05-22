@@ -189,6 +189,42 @@ export const flows: AtlasFlow[] = [
     relatedProduct: "PEDIGREE Sourcing",
     color: "blue_gold",
   },
+  // ── Asia distribution settlement (money in to UAE from SG / HK) ─────
+  // Pair with the UAE ↔ SG and UAE ↔ HK trade arcs above. The Asian hubs
+  // settle to UAE for distributed TROY / Sukuk product; metal/distribution
+  // goes out, money comes back.
+  {
+    id: "flow-sg-uae-settlement-001",
+    name: "Singapore → UAE Distribution Settlement",
+    type: "settlement",
+    source: { country: "Singapore", city: "Singapore", lat: 1.3521, lng: 103.8198 },
+    destination: { country: "United Arab Emirates", city: "Dubai", lat: 25.2048, lng: 55.2708 },
+    asset: "Settlement / Payment for TROY · Sukuk Distribution",
+    state: "Network Setup",
+    status: "network_setup",
+    risk: "low",
+    complianceStatus: "documented",
+    settlementWindow: "Same-day (planned)",
+    entity: "AUM Treasury",
+    relatedProduct: "TROY · Sukuk",
+    color: "blue_gold",
+  },
+  {
+    id: "flow-hk-uae-settlement-001",
+    name: "Hong Kong → UAE Distribution Settlement",
+    type: "settlement",
+    source: { country: "Hong Kong", city: "Hong Kong", lat: 22.3193, lng: 114.1694 },
+    destination: { country: "United Arab Emirates", city: "Dubai", lat: 25.2048, lng: 55.2708 },
+    asset: "Settlement / Payment for TROY · Sukuk Distribution",
+    state: "Network Setup",
+    status: "network_setup",
+    risk: "low",
+    complianceStatus: "documented",
+    settlementWindow: "Same-day (planned)",
+    entity: "AUM Treasury",
+    relatedProduct: "TROY · Sukuk",
+    color: "blue_gold",
+  },
   {
     id: "flow-uae-trade-partner-001",
     name: "UAE Trade Partner Refining & Distribution",
