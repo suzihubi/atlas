@@ -125,20 +125,19 @@ export const roadmapItems: RoadmapItem[] = [
     id: "r1",
     quarter: "Q2 2026",
     category: "structural",
-    milestone:
-      "DIFC Prescribed Company — AUM Reserve Holdings Limited incorporation",
+    milestone: "DIFC Prescribed Company and Trust incorporation",
   },
   {
     id: "r2",
     quarter: "Q2 2026",
     category: "structural",
-    milestone: "DMCC SPV — AUM Treasury FZCO closing",
+    milestone: "DMCC SPV incorporation",
   },
   {
     id: "r3",
     quarter: "Q2 2026",
     category: "partnership",
-    milestone: "Trade Partner — TROY minting pilot MOU",
+    milestone: "Trade Partner — TROY minting pilot",
   },
   {
     id: "r4",
@@ -162,13 +161,13 @@ export const roadmapItems: RoadmapItem[] = [
     id: "r7",
     quarter: "Q4 2026",
     category: "product",
-    milestone: "Sukuk pilot — Ghana underlying, Labuan issuance",
+    milestone: "Sukuk pilot",
   },
   {
     id: "r8",
     quarter: "Q4 2026",
     category: "fund",
-    milestone: "AUM Capital Management — Labuan wakil mandate live",
+    milestone: "AUM Capital Management Limited — wakil mandate live",
   },
 ];
 

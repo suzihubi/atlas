@@ -7,7 +7,6 @@ const items = [
   { color: aumPalette.whiteGold, label: "Storage / Custody Network" },
   { color: aumPalette.blueGold, label: "Trade & Settlement Corridor" },
   { color: aumPalette.purpleGold, label: "Sukuk / Fund Management Structure" },
-  { color: aumPalette.coolWhite, label: "Regulatory / Oversight Linkage" },
   { color: aumPalette.amber, label: "Exploratory / In Development" },
 ];
 
