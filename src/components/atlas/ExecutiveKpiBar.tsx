@@ -46,7 +46,13 @@ export function ExecutiveKpiBar() {
               className="mt-1 truncate text-[10px] uppercase tracking-[0.12em]"
               style={{
                 color:
-                  k.status === "warn"
+                  k.subStatus === "ok"
+                    ? "var(--atlas-success)"
+                    : k.subStatus === "warn"
+                    ? "var(--atlas-warn)"
+                    : k.subStatus === "alert"
+                    ? "var(--atlas-danger)"
+                    : k.status === "warn"
                     ? "var(--atlas-warn)"
                     : "var(--atlas-creme-muted)",
               }}

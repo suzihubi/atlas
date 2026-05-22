@@ -119,4 +119,6 @@ export interface KpiValue {
   /** Optional movement delta (e.g. "+1.4%"). Use sparingly — implies live data. */
   delta?: string;
   status?: "ok" | "warn" | "alert";
+  /** Optional explicit color treatment for the sub-line — overrides status. */
+  subStatus?: "ok" | "warn" | "alert";
 }

@@ -21,7 +21,7 @@ export const headerKpis: KpiValue[] = [
     id: "sourcing",
     label: "Sourcing Corridors",
     value: "3",
-    sub: "Ghana · Mozambique · Colombia",
+    sub: "GH · MZ · CO",
     status: "ok",
   },
   {
@@ -34,16 +34,17 @@ export const headerKpis: KpiValue[] = [
   {
     id: "trade",
     label: "Trade Hubs",
-    value: "3",
-    sub: "UAE · SG · HK",
+    value: "5",
+    sub: "UAE · SG · HK · UK · CH",
     status: "ok",
   },
   {
     id: "regulatory",
     label: "Regulatory Posture",
-    value: "ATI Held",
+    value: "Pre-Operational",
     sub: "VARA · Category 1 ARVA",
-    status: "warn",
+    status: "ok",
+    subStatus: "ok",
   },
 ];
 
@@ -55,7 +56,7 @@ export const footprintCard = {
     { label: "Operating Core", value: "United Arab Emirates" },
     { label: "Storage Jurisdictions", value: "5" },
     { label: "Sourcing Corridors", value: "3" },
-    { label: "Trade Hubs", value: "3" },
+    { label: "Trade Hubs", value: "5" },
     { label: "Fund Management Hub", value: "Labuan" },
   ],
 };
@@ -101,7 +102,7 @@ export const troyCard = {
       label: "Lifecycle",
       value: "Lock → Fractionalise → Mint → Circulate → Burn/Reaggregate → Unlock",
     },
-    { label: "Status", value: "Pre-Launch · ATI Held" },
+    { label: "Status", value: "Pre-Operational" },
   ],
 };
 
