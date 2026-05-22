@@ -14,7 +14,7 @@ export const headerKpis: KpiValue[] = [
     id: "entities",
     label: "Group Entities",
     value: "6",
-    sub: "Across ADGM · DWTC · DIFC · DMCC",
+    sub: "ADGM · DWTC · DIFC · DMCC",
     status: "ok",
   },
   {
