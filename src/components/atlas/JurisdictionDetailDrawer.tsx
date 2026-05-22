@@ -110,8 +110,27 @@ export function JurisdictionDetailDrawer({ jurisdiction, flows, onClose }: Props
                   </div>
                   <ul className="mt-2 flex flex-col gap-1">
                     {jurisdiction.entities.map((e) => (
-                      <li key={e} className="text-[12px] text-[var(--atlas-creme)]">
+                      <li key={e} className="text-[12px] leading-snug text-[var(--atlas-creme)]">
                         {e}
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+
+              {jurisdiction.subPins && jurisdiction.subPins.length > 0 && (
+                <>
+                  <div className="mt-5 text-[10px] uppercase tracking-[0.18em] text-[var(--atlas-creme-muted)]">
+                    Sub-Pins
+                  </div>
+                  <ul className="mt-2 flex flex-col gap-1">
+                    {jurisdiction.subPins.map((s) => (
+                      <li
+                        key={s.id}
+                        className="flex items-center gap-2 text-[12px] text-[var(--atlas-creme)]"
+                      >
+                        <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--atlas-creme-muted)]" />
+                        {s.label}
                       </li>
                     ))}
                   </ul>
@@ -133,7 +152,7 @@ export function JurisdictionDetailDrawer({ jurisdiction, flows, onClose }: Props
                           {f.source.country.split(" ")[0]} → {f.destination.country.split(" ")[0]}
                         </span>
                         <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--atlas-creme-muted)]">
-                          {f.volume}
+                          {f.state}
                         </span>
                       </li>
                     ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { flows } from "@/data/flows";
 import { ExecutiveKpiBar } from "@/components/atlas/ExecutiveKpiBar";
 import { OperationsPanel } from "@/components/atlas/OperationsPanel";
@@ -23,64 +23,53 @@ function GlobeSkeleton() {
   return (
     <div className="absolute inset-0 flex items-center justify-center">
       <div className="text-[10px] uppercase tracking-[0.24em] text-[var(--atlas-creme-muted)]">
-        Initializing operational intelligence…
+        Initializing strategic network…
       </div>
     </div>
   );
 }
 
+// All UI-toggleable layers. `edd` is layer-only (auto-applied to EDD-flagged flows).
 const ALL_LAYERS: AtlasLayer[] = [
-  "gold",
-  "vault",
-  "tokenization",
-  "treasury",
-  "compliance",
-  "legal",
-  "risk",
-  "institutional",
+  "sourcing",
+  "storage",
+  "trade",
+  "sukuk",
+  "fund_management",
+  "pedigree",
+  "troy",
+  "aux",
 ];
 
 function modeToLayers(mode: DashboardMode): Set<AtlasLayer> {
   switch (mode) {
-    case "gold":
-      return new Set<AtlasLayer>(["gold", "vault"]);
-    case "tokenization":
-      return new Set<AtlasLayer>(["tokenization", "vault"]);
-    case "treasury":
-      return new Set<AtlasLayer>(["treasury", "institutional"]);
-    case "legal":
-      return new Set<AtlasLayer>(["legal", "compliance"]);
-    case "risk":
-      return new Set<AtlasLayer>(["risk", "compliance", "gold"]);
-    case "report":
-    case "live":
+    case "sourcing":
+      return new Set<AtlasLayer>(["sourcing", "pedigree", "edd"]);
+    case "storage":
+      return new Set<AtlasLayer>(["storage"]);
+    case "trade":
+      return new Set<AtlasLayer>(["trade"]);
+    case "sukuk":
+      return new Set<AtlasLayer>(["sukuk", "fund_management"]);
+    case "products":
+      return new Set<AtlasLayer>(["troy", "aux"]);
+    case "global":
+    case "briefing":
     default:
-      return new Set<AtlasLayer>(ALL_LAYERS);
+      return new Set<AtlasLayer>([...ALL_LAYERS, "edd"]);
   }
 }
 
 type MobilePanel = "operations" | "activity" | null;
 
 export default function AtlasPage() {
-  const [mode, setMode] = useState<DashboardMode>("live");
-  const [activeLayers, setActiveLayers] = useState<Set<AtlasLayer>>(new Set(ALL_LAYERS));
+  const [mode, setMode] = useState<DashboardMode>("global");
+  const [activeLayers, setActiveLayers] = useState<Set<AtlasLayer>>(
+    new Set([...ALL_LAYERS, "edd"]),
+  );
   const [selectedFlow, setSelectedFlow] = useState<AtlasFlow | null>(null);
   const [selectedJurisdiction, setSelectedJurisdiction] = useState<Jurisdiction | null>(null);
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>(null);
-  const [utc, setUtc] = useState<string>("");
-
-  useEffect(() => {
-    const tick = () => {
-      const d = new Date();
-      const hh = String(d.getUTCHours()).padStart(2, "0");
-      const mm = String(d.getUTCMinutes()).padStart(2, "0");
-      const ss = String(d.getUTCSeconds()).padStart(2, "0");
-      setUtc(`${hh}:${mm}:${ss} UTC`);
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
 
   const toggleLayer = (l: AtlasLayer) => {
     setActiveLayers((prev) => {
@@ -129,8 +118,8 @@ export default function AtlasPage() {
               AUM Atlas
             </span>
             <span className="mt-0.5 text-[12px] tracking-tight text-[var(--atlas-creme)] md:text-[18px]">
-              Global Operations
-              <span className="hidden md:inline"> Command Center</span>
+              <span className="hidden md:inline">Global Strategic Network</span>
+              <span className="md:hidden">Strategic Network</span>
             </span>
           </div>
         </div>
@@ -147,8 +136,20 @@ export default function AtlasPage() {
           <span className="hidden items-center gap-1.5 rounded-full border border-[var(--atlas-border)] px-2.5 py-1 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme-muted)] lg:inline-flex">
             Class · Internal
           </span>
-          <span className="tabular-nums text-[11px] text-[var(--atlas-creme)] md:text-[12px]">
-            {utc}
+          <span
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-1 text-[10px] uppercase tracking-[0.16em]"
+            style={{
+              borderColor: "rgba(230, 184, 92, 0.55)",
+              color: "var(--atlas-warn)",
+              background: "rgba(230, 184, 92, 0.08)",
+            }}
+          >
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--atlas-warn)" }}
+            />
+            <span className="hidden md:inline">ATI Held · Pre-Launch</span>
+            <span className="md:hidden">ATI Held</span>
           </span>
         </div>
       </header>
@@ -171,7 +172,6 @@ export default function AtlasPage() {
 
         {/* Globe stage */}
         <main className="relative flex-1">
-          {/* Legend — hidden on small mobile */}
           <div className="hidden sm:block">
             <FlowLegend />
           </div>
@@ -180,17 +180,17 @@ export default function AtlasPage() {
           <button
             onClick={() => setMobilePanel("operations")}
             className="absolute left-3 top-3 z-10 inline-flex items-center gap-2 rounded-full border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] backdrop-blur-md md:hidden"
-            aria-label="Open Operations panel"
+            aria-label="Open Network panel"
           >
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--atlas-creme)]" />
-            Operations
+            Network
           </button>
           <button
             onClick={() => setMobilePanel("activity")}
             className="absolute right-3 top-3 z-10 inline-flex items-center gap-2 rounded-full border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-[var(--atlas-creme)] backdrop-blur-md lg:hidden"
-            aria-label="Open Activity panel"
+            aria-label="Open Roadmap panel"
           >
-            Activity
+            Roadmap
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ background: "var(--atlas-warn)" }}
@@ -226,7 +226,7 @@ export default function AtlasPage() {
           onToggleLayer={toggleLayer}
           mode={mode}
           onModeChange={onModeChange}
-          onSnapshot={() => alert("Executive Snapshot — coming soon")}
+          onSnapshot={() => alert("Executive Briefing — coming soon")}
         />
       </div>
 
@@ -234,16 +234,16 @@ export default function AtlasPage() {
       <MobileSheet
         open={mobilePanel === "operations"}
         onClose={() => setMobilePanel(null)}
-        eyebrow="Global Operations"
-        title="Treasury · Reserves · Footprint"
+        eyebrow="Strategic Network"
+        title="Footprint · PEDIGREE · Sukuk · TROY · AUX"
       >
         <OperationsPanel />
       </MobileSheet>
       <MobileSheet
         open={mobilePanel === "activity"}
         onClose={() => setMobilePanel(null)}
-        eyebrow="Activity"
-        title="Feed · Alerts · Compliance"
+        eyebrow="Roadmap"
+        title="Milestones · Watch List · Regulatory Status"
       >
         <RiskAlertFeed />
       </MobileSheet>

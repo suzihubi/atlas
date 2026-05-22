@@ -12,7 +12,16 @@ export function ExecutiveKpiBar() {
             {k.label}
           </div>
           <div className="mt-1 flex items-baseline gap-2">
-            <div className="-text-1 text-[var(--atlas-creme)]">{k.value}</div>
+            <div
+              className="text-[var(--atlas-creme)]"
+              style={{
+                fontSize: "clamp(20px, 19.22px + 0.2vw, 22px)",
+                letterSpacing: "-0.03em",
+                lineHeight: 1,
+              }}
+            >
+              {k.value}
+            </div>
             {k.delta && (
               <span
                 className="text-[11px] tracking-tight"
@@ -29,6 +38,20 @@ export function ExecutiveKpiBar() {
               </span>
             )}
           </div>
+          {k.sub && (
+            <div
+              className="mt-1 truncate text-[10px] uppercase tracking-[0.12em]"
+              style={{
+                color:
+                  k.status === "warn"
+                    ? "var(--atlas-warn)"
+                    : "var(--atlas-creme-muted)",
+              }}
+              title={k.sub}
+            >
+              {k.sub}
+            </div>
+          )}
         </div>
       ))}
     </div>

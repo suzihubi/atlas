@@ -3,24 +3,24 @@
 import type { AtlasLayer, DashboardMode } from "@/types/atlas";
 
 const layers: { id: AtlasLayer; label: string }[] = [
-  { id: "gold", label: "Gold" },
-  { id: "vault", label: "Vaults" },
-  { id: "tokenization", label: "Tokenization" },
-  { id: "treasury", label: "Treasury" },
-  { id: "compliance", label: "Compliance" },
-  { id: "legal", label: "Legal" },
-  { id: "risk", label: "Risk" },
-  { id: "institutional", label: "Institutional" },
+  { id: "sourcing", label: "Sourcing" },
+  { id: "storage", label: "Storage" },
+  { id: "trade", label: "Trade" },
+  { id: "sukuk", label: "Sukuk" },
+  { id: "fund_management", label: "Fund Management" },
+  { id: "pedigree", label: "PEDIGREE" },
+  { id: "troy", label: "TROY" },
+  { id: "aux", label: "AUX" },
 ];
 
 const modes: { id: DashboardMode; label: string }[] = [
-  { id: "live", label: "Global Live" },
-  { id: "gold", label: "Gold Ops" },
-  { id: "tokenization", label: "Tokenization" },
-  { id: "treasury", label: "Treasury" },
-  { id: "legal", label: "Legal" },
-  { id: "risk", label: "Risk" },
-  { id: "report", label: "Executive Report" },
+  { id: "global", label: "Global View" },
+  { id: "sourcing", label: "Sourcing & PEDIGREE" },
+  { id: "storage", label: "Storage Network" },
+  { id: "trade", label: "Trade Corridors" },
+  { id: "sukuk", label: "Sukuk Framework" },
+  { id: "products", label: "TROY · AUX" },
+  { id: "briefing", label: "Executive Briefing" },
 ];
 
 type Props = {
@@ -85,7 +85,7 @@ export function LayerControlPanel({
           onClick={onSnapshot}
           className="rounded-full border border-[var(--atlas-creme)] bg-transparent px-4 py-1.5 text-[11px] uppercase tracking-[0.14em] text-[var(--atlas-creme)] transition-colors hover:bg-[var(--atlas-creme)] hover:text-[var(--atlas-brown)]"
         >
-          Executive Snapshot
+          Executive Briefing
         </button>
       </div>
     </div>

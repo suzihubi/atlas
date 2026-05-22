@@ -17,6 +17,8 @@ type Props = {
 const COUNTRIES_GEOJSON =
   "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson";
 
+// Country names matching the Natural Earth GeoJSON `NAME` / `ADMIN` properties.
+// BVI and Cayman intentionally absent — we don't operate there.
 const AUM_COUNTRY_NAMES = new Set([
   "United Arab Emirates",
   "Switzerland",
@@ -24,39 +26,42 @@ const AUM_COUNTRY_NAMES = new Set([
   "Singapore",
   "Hong Kong S.A.R.",
   "Hong Kong",
-  "Cayman Is.",
-  "Cayman Islands",
-  "British Virgin Is.",
-  "British Virgin Islands",
   "Malaysia",
   "Ghana",
   "Colombia",
   "Mozambique",
 ]);
 
-function layerForFlow(flow: AtlasFlow): AtlasLayer {
+/** Maps a flow to the layer(s) that should make it visible on the globe. */
+function layersForFlow(flow: AtlasFlow): AtlasLayer[] {
+  const out: AtlasLayer[] = [];
   switch (flow.type) {
-    case "gold_sourcing":
-      return "gold";
-    case "vault_transfer":
-      return "vault";
-    case "token_mint":
-    case "token_burn":
-    case "redemption":
-      return "tokenization";
-    case "liquidity":
-    case "treasury":
-    case "otc":
-      return "treasury";
-    case "legal_structure":
-      return "legal";
-    case "compliance":
-      return "compliance";
-    case "regional_expansion":
-      return "institutional";
-    default:
-      return "treasury";
+    case "pedigree_sourcing":
+      out.push("sourcing", "pedigree");
+      break;
+    case "storage":
+      out.push("storage");
+      break;
+    case "storage_trade":
+      out.push("storage", "trade");
+      break;
+    case "trade_storage":
+      out.push("trade", "storage");
+      break;
+    case "trade":
+      out.push("trade");
+      break;
+    case "sukuk_issuance":
+      out.push("sukuk", "fund_management");
+      break;
+    case "partnership":
+      // Trade Partner arc — surface under trade + troy modes.
+      out.push("trade", "troy");
+      break;
   }
+  // Surface EDD-flagged flows under the EDD overlay layer.
+  if (flow.complianceStatus === "enhanced_due_diligence") out.push("edd");
+  return out;
 }
 
 export function OperationsGlobe({
@@ -153,19 +158,37 @@ export function OperationsGlobe({
         // graceful fallback — globe still works without polygons
       });
 
+    type PointDatum = {
+      lat: number;
+      lng: number;
+      jurisdiction: Jurisdiction;
+      subPin?: { id: string; label: string };
+    };
+
+    const primaryPoints: PointDatum[] = jurisdictions.map((j) => ({
+      lat: j.coordinates.lat,
+      lng: j.coordinates.lng,
+      jurisdiction: j,
+    }));
+
+    const subPinPoints: PointDatum[] = jurisdictions.flatMap((j) =>
+      (j.subPins ?? []).map((s) => ({
+        lat: s.lat,
+        lng: s.lng,
+        jurisdiction: j,
+        subPin: { id: s.id, label: s.label },
+      })),
+    );
+
     globe
-      .pointsData(
-        jurisdictions.map((j) => ({
-          lat: j.coordinates.lat,
-          lng: j.coordinates.lng,
-          jurisdiction: j,
-        })),
-      )
+      .pointsData([...primaryPoints, ...subPinPoints])
       .pointLat("lat")
       .pointLng("lng")
-      .pointColor(() => aumPalette.creme)
-      .pointAltitude(0.012)
-      .pointRadius(0.45);
+      .pointColor((d: object) =>
+        (d as PointDatum).subPin ? "rgba(255, 235, 196, 0.55)" : aumPalette.creme,
+      )
+      .pointAltitude((d: object) => ((d as PointDatum).subPin ? 0.008 : 0.012))
+      .pointRadius((d: object) => ((d as PointDatum).subPin ? 0.25 : 0.45));
 
     globe
       .ringsData(jurisdictions.map((j) => ({ lat: j.coordinates.lat, lng: j.coordinates.lng })))
@@ -175,7 +198,9 @@ export function OperationsGlobe({
       .ringRepeatPeriod(2200);
 
     function rebuildArcs() {
-      const visibleFlows = flowsRef.current.filter((f) => layersRef.current.has(layerForFlow(f)));
+      const visibleFlows = flowsRef.current.filter((f) =>
+        layersForFlow(f).some((l) => layersRef.current.has(l)),
+      );
       globe
         .arcsData(visibleFlows)
         .arcStartLat((d: object) => (d as AtlasFlow).source.lat)

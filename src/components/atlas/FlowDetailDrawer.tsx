@@ -92,11 +92,11 @@ export function FlowDetailDrawer({ flow, onClose }: Props) {
                 <Row label="Source City" value={flow.source.city} />
                 <Row label="Destination City" value={flow.destination.city} />
                 <Row label="Asset" value={flow.asset} />
-                <Row label="Volume" value={flow.volume} />
+                <Row label="State" value={flow.state} />
                 <Row label="Settlement Window" value={flow.settlementWindow} />
                 <Row label="Responsible Entity" value={flow.entity} />
                 {flow.relatedProduct && <Row label="Related Product" value={flow.relatedProduct} />}
-                {flow.lastUpdated && <Row label="Last Update" value={flow.lastUpdated} />}
+                {flow.stageUpdated && <Row label="Stage Updated" value={flow.stageUpdated} />}
               </div>
 
               {flow.timeline && flow.timeline.length > 0 && (

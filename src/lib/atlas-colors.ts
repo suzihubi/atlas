@@ -1,4 +1,10 @@
-import type { FlowColor, RiskLevel, FlowStatus, ComplianceStatus } from "@/types/atlas";
+import type {
+  AtlasLayer,
+  ComplianceStatus,
+  FlowColor,
+  FlowStatus,
+  RiskLevel,
+} from "@/types/atlas";
 
 export const aumPalette = {
   brown: "#201914",
@@ -40,30 +46,34 @@ export const riskColorMap: Record<RiskLevel, string> = {
 };
 
 export const statusLabelMap: Record<FlowStatus, string> = {
-  active: "Active",
-  pending: "Pending",
-  settled: "Settled",
-  delayed: "Delayed",
-  paused: "Paused",
-  escalated: "Escalated",
-  failed: "Failed",
-  under_review: "Under Review",
-  verified: "Verified",
-  simulated: "Simulated",
   structural: "Structural",
+  pilot_window: "Pilot Window",
+  mou_stage: "MOU Stage",
+  network_setup: "Network Setup",
+  vault_onboarding: "Vault Onboarding",
   exploratory: "Exploratory",
   monitoring: "Monitoring",
+  enhanced_due_diligence: "Enhanced Due Diligence",
+  active: "Active",
+  paused: "Paused",
 };
 
 export const complianceLabelMap: Record<ComplianceStatus, string> = {
-  verified: "Verified",
-  pending_review: "Pending Review",
+  documented: "Documented",
   under_review: "Under Review",
   enhanced_due_diligence: "Enhanced Due Diligence",
-  missing_documentation: "Missing Documentation",
-  audit_required: "Audit Required",
-  regulator_review: "Regulator Review",
-  blocked: "Blocked",
-  documented: "Documented",
   pending: "Pending",
+};
+
+/** Layer → flow-line color token. Drives globe arc tinting per layer. */
+export const layerColorMap: Record<AtlasLayer, FlowColor> = {
+  sourcing: "gold",
+  pedigree: "gold",
+  storage: "white_gold",
+  trade: "blue_gold",
+  sukuk: "purple_gold",
+  fund_management: "purple_gold",
+  troy: "gold",
+  aux: "blue_gold",
+  edd: "red_amber",
 };

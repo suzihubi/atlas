@@ -1,27 +1,36 @@
-import { feedEvents, alerts } from "@/data/kpis";
+import { roadmapItems, watchListItems, regulatoryStatus } from "@/data/kpis";
 import { AumGlassCard } from "./AumGlassCard";
+import { aumPalette } from "@/lib/atlas-colors";
 
 const categoryColor: Record<string, string> = {
-  gold: "#e8c87a",
-  token: "#c8a8d4",
-  settlement: "#a8c4d8",
-  compliance: "#e6b85c",
-  vault: "#f3e2a3",
-  risk: "#d86868",
+  structural: aumPalette.purpleGold,
+  regulatory: aumPalette.coolWhite,
+  partnership: aumPalette.blueGold,
+  product: aumPalette.goldLine,
+  network: aumPalette.whiteGold,
+  fund: aumPalette.purpleGold,
 };
 
 const severityColor: Record<string, string> = {
-  low: "#9ed6a6",
-  medium: "#e6b85c",
-  high: "#d86868",
+  low: aumPalette.success,
+  medium: aumPalette.warn,
+  high: aumPalette.danger,
 };
 
+/**
+ * Right-hand activity panel.
+ *
+ * Now a forward-looking strategic view, not a faked live feed:
+ *   1. Roadmap & Milestones   — quarter-labeled milestones
+ *   2. Watch List             — jurisdictions under enhanced review
+ *   3. Regulatory Status      — posture across jurisdictions
+ */
 export function RiskAlertFeed() {
   return (
     <div className="flex flex-col gap-3">
-      <AumGlassCard eyebrow="Live Operational Feed" title="Last 60 minutes">
+      <AumGlassCard eyebrow="Roadmap" title="Strategic Milestones">
         <div className="flex flex-col">
-          {feedEvents.map((e) => (
+          {roadmapItems.map((e) => (
             <div
               key={e.id}
               className="flex items-start gap-2 border-b border-[var(--atlas-border)] py-2 last:border-b-0"
@@ -32,10 +41,10 @@ export function RiskAlertFeed() {
               />
               <div className="flex flex-1 flex-col">
                 <span className="text-[12px] leading-snug text-[var(--atlas-creme)]">
-                  {e.label}
+                  {e.milestone}
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.14em] text-[var(--atlas-creme-muted)]">
-                  {e.time} UTC · {e.category}
+                  {e.quarter} · {e.category}
                 </span>
               </div>
             </div>
@@ -43,9 +52,9 @@ export function RiskAlertFeed() {
         </div>
       </AumGlassCard>
 
-      <AumGlassCard eyebrow="Risk & Alerts" title={`${alerts.length} open`}>
+      <AumGlassCard eyebrow="Watch List" title="Jurisdictions Under Enhanced Review">
         <div className="flex flex-col gap-2">
-          {alerts.map((a) => (
+          {watchListItems.map((a) => (
             <div
               key={a.id}
               className="flex items-start gap-2 rounded-[10px] border px-2.5 py-2"
@@ -74,24 +83,17 @@ export function RiskAlertFeed() {
         </div>
       </AumGlassCard>
 
-      <AumGlassCard eyebrow="Compliance Monitor" title="Open Items">
+      <AumGlassCard eyebrow="Regulatory Status" title="Position Across Jurisdictions">
         <div className="flex flex-col">
-          {[
-            { label: "KYC / KYB Clearance Rate", value: "98.1%" },
-            { label: "Sanctions Screening", value: "Clear" },
-            { label: "Audit Status", value: "On Track" },
-            { label: "MLRO Queue", value: "4" },
-            { label: "Documents Pending", value: "12" },
-            { label: "Pending Approvals", value: "2" },
-          ].map((r) => (
+          {regulatoryStatus.map((r) => (
             <div
               key={r.label}
-              className="flex items-baseline justify-between border-b border-[var(--atlas-border)] py-1.5 last:border-b-0"
+              className="flex items-baseline justify-between gap-3 border-b border-[var(--atlas-border)] py-1.5 last:border-b-0"
             >
-              <span className="text-[11px] uppercase tracking-[0.14em] text-[var(--atlas-creme-muted)]">
+              <span className="shrink-0 text-[10px] uppercase tracking-[0.14em] text-[var(--atlas-creme-muted)]">
                 {r.label}
               </span>
-              <span className="text-[13px] tabular-nums text-[var(--atlas-creme)]">
+              <span className="text-right text-[12px] text-[var(--atlas-creme)]">
                 {r.value}
               </span>
             </div>

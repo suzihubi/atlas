@@ -1,43 +1,30 @@
 export type FlowType =
-  | "gold_sourcing"
-  | "vault_transfer"
-  | "token_mint"
-  | "token_burn"
-  | "redemption"
-  | "liquidity"
-  | "treasury"
-  | "legal_structure"
-  | "compliance"
-  | "otc"
-  | "regional_expansion";
+  | "pedigree_sourcing"
+  | "storage"
+  | "storage_trade"
+  | "trade_storage"
+  | "trade"
+  | "sukuk_issuance"
+  | "partnership";
 
 export type FlowStatus =
-  | "active"
-  | "pending"
-  | "settled"
-  | "delayed"
-  | "paused"
-  | "escalated"
-  | "failed"
-  | "under_review"
-  | "verified"
-  | "simulated"
   | "structural"
+  | "pilot_window"
+  | "mou_stage"
+  | "network_setup"
+  | "vault_onboarding"
   | "exploratory"
-  | "monitoring";
+  | "monitoring"
+  | "enhanced_due_diligence"
+  | "active"
+  | "paused";
 
 export type RiskLevel = "low" | "medium" | "high" | "critical";
 
 export type ComplianceStatus =
-  | "verified"
-  | "pending_review"
+  | "documented"
   | "under_review"
   | "enhanced_due_diligence"
-  | "missing_documentation"
-  | "audit_required"
-  | "regulator_review"
-  | "blocked"
-  | "documented"
   | "pending";
 
 export type FlowColor =
@@ -50,27 +37,35 @@ export type FlowColor =
   | "red_amber";
 
 export type AtlasLayer =
-  | "gold"
-  | "vault"
-  | "tokenization"
-  | "treasury"
-  | "compliance"
-  | "legal"
-  | "risk"
-  | "institutional";
+  | "sourcing"
+  | "storage"
+  | "trade"
+  | "sukuk"
+  | "fund_management"
+  | "pedigree"
+  | "troy"
+  | "aux"
+  | "edd";
 
 export type DashboardMode =
-  | "live"
-  | "gold"
-  | "tokenization"
-  | "treasury"
-  | "legal"
-  | "risk"
-  | "report";
+  | "global"
+  | "sourcing"
+  | "storage"
+  | "trade"
+  | "sukuk"
+  | "products"
+  | "briefing";
 
 export interface GeoPoint {
   country: string;
   city: string;
+  lat: number;
+  lng: number;
+}
+
+export interface SubPin {
+  id: string;
+  label: string;
   lat: number;
   lng: number;
 }
@@ -82,7 +77,8 @@ export interface AtlasFlow {
   source: GeoPoint;
   destination: GeoPoint;
   asset: string;
-  volume: string;
+  /** Human-readable stage/state — replaces the old `volume` field. */
+  state: string;
   status: FlowStatus;
   risk: RiskLevel;
   complianceStatus: ComplianceStatus;
@@ -90,10 +86,13 @@ export interface AtlasFlow {
   entity: string;
   relatedProduct?: string;
   color: FlowColor;
-  lastUpdated?: string;
+  /** Optional quarter label, e.g. "Q2 2026" — replaces lastUpdated timestamps. */
+  stageUpdated?: string;
   documents?: string[];
   timeline?: string[];
   executiveNotes?: string;
+  /** Note attached to the flow (e.g. rendering hints, internal sensitivity). */
+  note?: string;
 }
 
 export interface Jurisdiction {
@@ -108,12 +107,16 @@ export interface Jurisdiction {
   entities: string[];
   layers: AtlasLayer[];
   coordinates: { lat: number; lng: number };
+  subPins?: SubPin[];
 }
 
 export interface KpiValue {
   id: string;
   label: string;
   value: string;
+  /** Optional small sub-line under the value (e.g. "4 regions", "VARA · Category 1 ARVA"). */
+  sub?: string;
+  /** Optional movement delta (e.g. "+1.4%"). Use sparingly — implies live data. */
   delta?: string;
   status?: "ok" | "warn" | "alert";
 }

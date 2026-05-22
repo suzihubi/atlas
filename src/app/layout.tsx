@@ -10,9 +10,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AUM Atlas — Global Operations Command Center",
+  title: "AUM Atlas — Global Strategic Network",
   description:
-    "Executive dashboard for AUM: jurisdictional flows, gold reserves, tokenization, treasury and compliance — visualized on an interactive 3D globe.",
+    "AUM Group's global operational architecture: jurisdictions, sourcing corridors, storage network, sukuk framework and product structure — visualized on an interactive 3D globe.",
 };
 
 export const viewport: Viewport = {

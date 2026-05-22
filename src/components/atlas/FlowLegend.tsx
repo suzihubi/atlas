@@ -3,20 +3,20 @@
 import { aumPalette } from "@/lib/atlas-colors";
 
 const items = [
-  { color: aumPalette.goldLine, label: "Bullion / Reserve Movement" },
-  { color: aumPalette.whiteGold, label: "Vault / Custody" },
-  { color: aumPalette.blueGold, label: "Fiat / Settlement Rail" },
-  { color: aumPalette.purpleGold, label: "Legal / Issuance Structure" },
-  { color: aumPalette.coolWhite, label: "Compliance / Audit" },
-  { color: aumPalette.amber, label: "Pending / Medium Risk" },
-  { color: aumPalette.redAmber, label: "High Risk / EDD" },
+  { color: aumPalette.goldLine, label: "PEDIGREE Sourcing Corridor" },
+  { color: aumPalette.whiteGold, label: "Storage / Custody Network" },
+  { color: aumPalette.blueGold, label: "Trade & Settlement Corridor" },
+  { color: aumPalette.purpleGold, label: "Sukuk / Fund Management Structure" },
+  { color: aumPalette.coolWhite, label: "Regulatory / Oversight Linkage" },
+  { color: aumPalette.amber, label: "Exploratory / In Development" },
+  { color: aumPalette.redAmber, label: "Enhanced Due Diligence" },
 ];
 
 export function FlowLegend() {
   return (
     <div className="pointer-events-none absolute left-4 top-4 z-10 flex flex-col gap-1.5 rounded-[14px] border border-[var(--atlas-border)] bg-[var(--atlas-panel-strong)] p-3 backdrop-blur-md">
       <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--atlas-creme-muted)]">
-        Flow Legend
+        Network Legend
       </div>
       {items.map((i) => (
         <div key={i.label} className="flex items-center gap-2">
