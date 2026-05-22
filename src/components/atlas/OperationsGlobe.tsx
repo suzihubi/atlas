@@ -51,6 +51,9 @@ function layersForFlow(flow: AtlasFlow): AtlasLayer[] {
     case "trade":
       out.push("trade");
       break;
+    case "settlement":
+      out.push("trade");
+      break;
     case "sukuk_issuance":
       out.push("sukuk");
       break;
@@ -205,6 +208,22 @@ export function OperationsGlobe({
       const visibleFlows = flowsRef.current.filter((f) =>
         layersForFlow(f).some((l) => layersRef.current.has(l)),
       );
+      // Compute great-circle distance (radians) for explicit altitude scaling.
+      // Settlement arcs ride higher than supply arcs so the paired bidirectional
+      // pair (gold-in + blue-out) reads as two parallel curves instead of one
+      // overlapping line.
+      const haversine = (a: AtlasFlow) => {
+        const toRad = (d: number) => (d * Math.PI) / 180;
+        const dLat = toRad(a.destination.lat - a.source.lat);
+        const dLng = toRad(a.destination.lng - a.source.lng);
+        const s =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(a.source.lat)) *
+            Math.cos(toRad(a.destination.lat)) *
+            Math.sin(dLng / 2) ** 2;
+        return 2 * Math.atan2(Math.sqrt(s), Math.sqrt(1 - s));
+      };
+
       globe
         .arcsData(visibleFlows)
         .arcStartLat((d: object) => (d as AtlasFlow).source.lat)
@@ -215,7 +234,12 @@ export function OperationsGlobe({
           const c = flowColorMap[(d as AtlasFlow).color];
           return [`${c}00`, c, `${c}00`];
         })
-        .arcAltitudeAutoScale(0.55)
+        .arcAltitude((d: object) => {
+          const f = d as AtlasFlow;
+          const baseScale = f.type === "settlement" ? 0.85 : 0.55;
+          // Approximate three-globe's auto behavior so we can offset per-type.
+          return Math.min((haversine(f) / Math.PI) * baseScale, 0.9);
+        })
         .arcStroke(0.55)
         .arcDashLength(0.42)
         .arcDashGap(1.2)

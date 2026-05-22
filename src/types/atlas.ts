@@ -4,6 +4,7 @@ export type FlowType =
   | "storage_trade"
   | "trade_storage"
   | "trade"
+  | "settlement"
   | "sukuk_issuance"
   | "partnership";
 
